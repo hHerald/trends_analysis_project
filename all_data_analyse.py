@@ -138,3 +138,16 @@ def compare_hashtags_keywords(df):
 # Пример использования
 comparison_results = compare_hashtags_keywords(df)
 print(comparison_results)
+
+# Расчет продолжительности жизни трендов
+duration = filtered_df.groupby('trend_name').agg(min=('searched_at_datetime', 'min'), max=('searched_at_datetime', 'max'))
+duration['life_hours'] = (duration['max'] - duration['min']).dt.total_seconds() / 3600
+
+# Сортировка по продолжительности жизни трендов (от самых долгих)
+longest_living_trends = duration.sort_values(by='life_hours', ascending=False)
+
+# Вывод самых долгоживущих трендов
+top_longest_living_trends = longest_living_trends.head(10)
+
+print("Топ 10 самых долгоживущих трендов:")
+print(top_longest_living_trends[['life_hours']])
